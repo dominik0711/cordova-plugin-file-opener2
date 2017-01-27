@@ -1,11 +1,12 @@
 Contributors
 ------------
-[@Gillardo](https://github.com/Gillardo/), [@TankOs](https://github.com/TankOs), [@Rovi23](https://github.com/Rovi23), [@josemanuelbd](https://github.com/josemanuelbd), [@ielcoro](https://github.com/ielcoro), [@keturn](https://github.com/keturn), [@conform](https://github.com/conform), [@guyc](https://github.com/guyc), [@J3r0M3D3V](https://github.com/J3r0M3D3V)
+[@Gillardo](https://github.com/Gillardo/), [@TankOs](https://github.com/TankOs), [@Rovi23](https://github.com/Rovi23), [@josemanuelbd](https://github.com/josemanuelbd), [@ielcoro](https://github.com/ielcoro), [@keturn](https://github.com/keturn), [@conform](https://github.com/conform), [@guyc](https://github.com/guyc), [@J3r0M3D3V](https://github.com/J3r0M3D3V), [@dominik0711](https://github.com/dominik0711)
 
 
 A File Opener Plugin for Cordova (The Original Version)
 ==========================
-This plugin will open a file on your device file system with its default application.
+This plugin will open a file on your device file system with its default application. 
+Now with support for android-targetSdkVersion24+.
 
 Current Version: 2.0.3
 ----------------
