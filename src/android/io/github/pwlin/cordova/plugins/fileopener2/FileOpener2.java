@@ -2,6 +2,7 @@
 The MIT License (MIT)
 
 Copyright (c) 2013 pwlin - pwlin05@gmail.com
+Updated by dominik0711@gmail.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -23,15 +24,20 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 package io.github.pwlin.cordova.plugins.fileopener2;
 
 import java.io.File;
+import java.util.List;
 
+import org.apache.cordova.file.FileUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
-//import android.util.Log;
+import android.support.v4.content.FileProvider;
+import android.os.Build;
 
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CallbackContext;
@@ -42,7 +48,7 @@ public class FileOpener2 extends CordovaPlugin {
 
 	/**
 	 * Executes the request and returns a boolean.
-	 * 
+	 *
 	 * @param action
 	 *            The action to execute.
 	 * @param args
@@ -54,7 +60,7 @@ public class FileOpener2 extends CordovaPlugin {
 	public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
 		if (action.equals("open")) {
 			this._open(args.getString(0), args.getString(1), callbackContext);
-		} 
+		}
 		else if (action.equals("uninstall")) {
 			this._uninstall(args.getString(0), callbackContext);
 		}
@@ -84,23 +90,34 @@ public class FileOpener2 extends CordovaPlugin {
 		try {
 			CordovaResourceApi resourceApi = webView.getResourceApi();
 			Uri fileUri = resourceApi.remapUri(Uri.parse(fileArg));
-			fileName = this.stripFileProtocol(fileUri.toString());
+			fileName = fileUri.getPath();
 		} catch (Exception e) {
 			fileName = fileArg;
 		}
 		File file = new File(fileName);
 		if (file.exists()) {
 			try {
-				Uri path = Uri.fromFile(file);
+				Context context = cordova.getActivity();
+				String authority = context.getPackageName() + ".fileprovider"; //check suffix matching configuration in AndroidManifest.xml!
 				Intent intent = new Intent(Intent.ACTION_VIEW);
-				intent.setDataAndType(path, contentType);
+				Uri uri;
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+					uri = FileProvider.getUriForFile(context.getApplicationContext(), authority, file);
+
+					List<ResolveInfo> resInfoList = context.getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+					for (ResolveInfo resolveInfo : resInfoList) {
+							String packageName = resolveInfo.activityInfo.packageName;
+							context.grantUriPermission(packageName, uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+					}
+				}
+				else {
+					uri = Uri.fromFile(file);
+				}
+
+				intent.setDataAndType(uri, contentType);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				/*
-				 * @see
-				 * http://stackoverflow.com/questions/14321376/open-an-activity-from-a-cordovaplugin
-				 */
-				cordova.getActivity().startActivity(intent);
-				//cordova.getActivity().startActivity(Intent.createChooser(intent,"Open File in..."));
+
+				context.startActivity(intent);
 				callbackContext.success();
 			} catch (android.content.ActivityNotFoundException e) {
 				JSONObject errorObj = new JSONObject();
@@ -115,7 +132,7 @@ public class FileOpener2 extends CordovaPlugin {
 			callbackContext.error(errorObj);
 		}
 	}
-	
+
 	private void _uninstall(String packageId, CallbackContext callbackContext) throws JSONException {
 		if (this._appIsInstalled(packageId)) {
 			Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
@@ -130,7 +147,7 @@ public class FileOpener2 extends CordovaPlugin {
 			callbackContext.error(errorObj);
 		}
 	}
-	
+
 	private boolean _appIsInstalled(String packageId) {
 		PackageManager pm = cordova.getActivity().getPackageManager();
         boolean appInstalled = false;
@@ -142,12 +159,4 @@ public class FileOpener2 extends CordovaPlugin {
         }
         return appInstalled;
 	}
-
-	private String stripFileProtocol(String uriString) {
-		if (uriString.startsWith("file://")) {
-			uriString = uriString.substring(7);
-		}
-		return uriString;
-	}
-
 }
