@@ -18,6 +18,7 @@
 
     <!-- Android -->
     <platform name="android">
+	    <framework src="com.android.support:support-v4:+" />
         <source-file src="src/android/io/github/pwlin/cordova/plugins/fileopener2/FileOpener2.java" target-dir="src/io/github/pwlin/cordova/plugins/fileopener2" />
         <config-file target="res/xml/config.xml" parent="/*">
         <?xml version='1.0' encoding='utf-8'?>
