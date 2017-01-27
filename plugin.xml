@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<plugin xmlns="http://www.phonegap.com/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android" id="cordova-plugin-file-opener2" version="2.0.3">
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        id="cordova-plugin-file-opener2"
+        version="2.0.3">
 
     <name>File Opener2</name>
     <description>A File Opener Plugin for Cordova. (The Original Version)</description>
@@ -17,6 +20,7 @@
     <platform name="android">
         <source-file src="src/android/io/github/pwlin/cordova/plugins/fileopener2/FileOpener2.java" target-dir="src/io/github/pwlin/cordova/plugins/fileopener2" />
         <config-file target="res/xml/config.xml" parent="/*">
+        <?xml version='1.0' encoding='utf-8'?>
             <feature name="FileOpener2">
                 <param name="android-package" value="io.github.pwlin.cordova.plugins.fileopener2.FileOpener2" />
             </feature>
@@ -29,6 +33,9 @@
                 </paths>
         </config-file>
         <config-file target="AndroidManifest.xml" parent="/*">
+	        <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+        </config-file>
+        <config-file target="AndroidManifest.xml" parent="/manifest/application">
             <!-- Turn the application into a fileprovider to facilitate secure
             sharing of files associated with the app through content:// URI:s   -->
     	    <provider
@@ -40,7 +47,6 @@
                     android:name="android.support.FILE_PROVIDER_PATHS"
                     android:resource="@xml/provider_paths" />
             </provider>
-	        <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
         </config-file>
     </platform>
 
@@ -64,7 +70,7 @@
 		</config-file>
 		<source-file src="src/wp8/FileOpener2.cs" />
 	</platform>
-	
+
 
 	 <!-- windows -->
     <platform name="windows">
