@@ -21,6 +21,13 @@
                 <param name="android-package" value="io.github.pwlin.cordova.plugins.fileopener2.FileOpener2" />
             </feature>
         </config-file>
+        <config-file target="res/xml/provider_paths.xml" parent="/*">
+            <!-- Provide external file sharing capability for targetSDKVersion24+ -->
+            <?xml version="1.0" encoding="utf-8"?>
+                <paths>
+                    <external-files-path name="files-external" path="." />
+                </paths>
+        </config-file>
         <config-file target="AndroidManifest.xml" parent="/*">
             <!-- Turn the application into a fileprovider to facilitate secure
             sharing of files associated with the app through content:// URI:s   -->
